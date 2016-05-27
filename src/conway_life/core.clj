@@ -63,19 +63,14 @@
     (for [x (range (count (nth board y)))]
       (update-square board x y))))
 
-(defn loop-state 
-  "loop-state: Board -> IO
-   The main loop of the game. Takes in the current state, prints it, then recurses with the updated state."
-  [state]
-  (display-board state)
-  (println "Press any key to continue. Press Q to quit.")
-  (if (= (clojure.string/lower-case (read-line)) "q")
-    (println "Bye!")
-    (loop-state (update-board state))))
-
 (defn -main [limit-s & args]
   (let [limit (Integer/parseInt limit-s)]
     (if (> limit 50)
       (println "Let's not get crazy here, bud. Try something lower.")
-      (loop-state (make-board limit)))))
+      (loop [state (make-board limit)]
+        (display-board state)
+        (println "Press any key to continue. Type 'Q' or 'quit' to exit.")
+        (if (re-find #"(?i)(\bq\b|\bquit\b)" (read-line))
+          (println "Bye!")
+          (recur (update-board state)))))))
 
