@@ -9,10 +9,13 @@
 (defn make-board
   "make-board: Integer -> Board
    Creates a 2 dimensional vector containing about 40% living cells, and about 60% dead ones."
-   [limit]
-  (for [y (range limit)]
-    (for [x (range limit)]
-      (if (> 0.4 (rand)) alive dead))))
+  [limit]
+  (vec
+   (map
+    vec
+    (for [y (range limit)]
+      (for [x (range limit)]
+        (if (> 0.4 (rand)) alive dead))))))
 
 (defn display-board 
   "display-board: Board -> IO
@@ -31,7 +34,7 @@
    Takes the board and a set of coordinates, and returns the contents of those coordinates.
    If the item isn't in the board, it returns 0."
    [board x y]
-  (nth (nth board y '()) x 0))
+  (get (get board y '()) x 0))
 
 (defn neighbours
   "neighbours: Board, Integer, Integer -> List of Integers
@@ -59,9 +62,12 @@
   "update-board: Board -> Board
    Takes in the current board state, and produces a new board where each square has been updated."
   [board]
-  (for [y (range (count board))]
-    (for [x (range (count (nth board y)))]
-      (update-square board x y))))
+  (vec
+   (map
+    vec
+    (for [y (range (count board))]
+      (for [x (range (count (nth board y)))]
+        (update-square board x y))))))
 
 (defn -main [limit-s & args]
   (let [limit (Integer/parseInt limit-s)]
